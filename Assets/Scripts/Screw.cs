@@ -1,6 +1,4 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
@@ -28,11 +26,13 @@ public class Screw : MonoBehaviourPunCallbacks
         photonView = GetComponent<PhotonView>();
         int.TryParse(gameObject.name.Split('_').Last(), out screwSize);
 
-        if(!locked)
+        if (!locked)
         {
-            // trzeba sprawdzic czy nie wrzucic tego w RPC jak ktos odkreci i potem kolejny dolaczy
+            // TODO: trzeba sprawdzic czy nie wrzucic tego w RPC jak ktos odkreci i potem kolejny dolaczy
             this.GetComponentInChildren<Renderer>().material = this.unlockedMaterial;
             this.gameObject.transform.position = this.gameObject.transform.position + new Vector3(0, 0.0975f, 0);
+            this.GetComponentInChildren<CircularDrive>(true).outAngle = 0f;
+            this.GetComponentInChildren<CircularDrive>(true).startAngle = 0f;
         }
 
         replaceable.OnScrewChanged();
@@ -40,16 +40,16 @@ public class Screw : MonoBehaviourPunCallbacks
     public void OnTriggerEnter(Collider other)
     {
         if (SnappedTool) return;
-
         int.TryParse(other.name.Split('_').Last(), out int toolSize);
         if (other.tag.Equals(tag) && screwSize.Equals(toolSize))
         {
+            Debug.Log("pasi");
             Throwable toolThrowable = other.GetComponent<Throwable>();
 
             if (toolThrowable == null) return;
 
             bool isAttached = toolThrowable.interactable.attachedToHand != null;
-            if(isAttached)
+            if (isAttached)
                 widmo.SetActive(true);
         }
     }
@@ -66,7 +66,7 @@ public class Screw : MonoBehaviourPunCallbacks
         {
             Throwable toolThrowable = other.GetComponent<Throwable>();
 
-            if(toolThrowable == null) return;
+            if (toolThrowable == null) return;
 
             bool isAttached = toolThrowable.interactable.attachedToHand != null;
 
@@ -136,7 +136,8 @@ public class ScrewEditor : Editor
 
         if (GUILayout.Button("Lock/Unlock screw"))
         {
-            if(screw.locked)
+            // TODO: tutaj trzeba przy odkreceniu ustawic startAngle w CD
+            if (screw.locked)
                 photonView.RPC("RPC_UnScrew", RpcTarget.AllBuffered, null);
             else
                 photonView.RPC("RPC_Screw", RpcTarget.AllBuffered, null);

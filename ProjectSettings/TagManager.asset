@@ -9,6 +9,7 @@ TagManager:
   - Tool
   - Allen
   - Wrench
+  - correctPosition
   layers:
   - Default
   - TransparentFX

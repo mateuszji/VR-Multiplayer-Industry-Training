@@ -21,7 +21,6 @@ public class ToolSpawnerManager : MonoBehaviour
     public void spawnTool()
     {
         string[] toolInfo = this.name.Split('_');
-
         GameObject gm = PhotonNetwork.Instantiate(toolInfo[0], positionToSpawn.position, positionToSpawn.rotation);
 
         if (toolInfo[0] == "Allen")
