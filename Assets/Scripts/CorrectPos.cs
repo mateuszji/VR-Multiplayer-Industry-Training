@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CorrectPos : MonoBehaviour
 {
+    [HideInInspector]
     public Replaceable replaceable;
 
     private void Start()

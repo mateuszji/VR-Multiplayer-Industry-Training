@@ -10,6 +10,7 @@ TagManager:
   - Allen
   - Wrench
   - correctPosition
+  - Quest
   layers:
   - Default
   - TransparentFX

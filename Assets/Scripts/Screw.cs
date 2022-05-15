@@ -29,8 +29,8 @@ public class Screw : MonoBehaviourPunCallbacks
         if (!locked)
         {
             // TODO: trzeba sprawdzic czy nie wrzucic tego w RPC jak ktos odkreci i potem kolejny dolaczy
+            this.gameObject.transform.position = this.gameObject.transform.position + transform.right * 0.1f;
             this.GetComponentInChildren<Renderer>().material = this.unlockedMaterial;
-            this.gameObject.transform.position = this.gameObject.transform.position + new Vector3(0, 0.0975f, 0);
             this.GetComponentInChildren<CircularDrive>(true).outAngle = 0f;
             this.GetComponentInChildren<CircularDrive>(true).startAngle = 0f;
         }
@@ -43,7 +43,6 @@ public class Screw : MonoBehaviourPunCallbacks
         int.TryParse(other.name.Split('_').Last(), out int toolSize);
         if (other.tag.Equals(tag) && screwSize.Equals(toolSize))
         {
-            Debug.Log("pasi");
             Throwable toolThrowable = other.GetComponent<Throwable>();
 
             if (toolThrowable == null) return;
@@ -81,7 +80,7 @@ public class Screw : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_UnScrew()
     {
-        this.gameObject.transform.position = this.gameObject.transform.position + new Vector3(0, 0.0975f, 0);
+        this.gameObject.transform.position = this.gameObject.transform.position + transform.right * 0.1f;
         this.GetComponentInChildren<Renderer>().material = this.unlockedMaterial;
         this.locked = false;
         replaceable.OnScrewChanged();
@@ -90,7 +89,7 @@ public class Screw : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_Screw()
     {
-        this.gameObject.transform.position = this.gameObject.transform.position + new Vector3(0, -0.0975f, 0);
+        this.gameObject.transform.position = this.gameObject.transform.position - transform.right * 0.1f;
         this.GetComponentInChildren<Renderer>().material = this.lockedMaterial;
         this.locked = true;
         replaceable.OnScrewChanged();
@@ -114,6 +113,12 @@ public class Screw : MonoBehaviourPunCallbacks
         SnappedTool.transform.rotation = PhotonView.Find(pvID).gameObject.transform.rotation;
         PhotonView.Find(pvID).gameObject.SetActive(false);
         SnappedTool = null;
+    }
+
+    [PunRPC]
+    public void RPC_DisableScrew()
+    {
+        this.GetComponent<Collider>().enabled = false;
     }
 }
 

@@ -12,7 +12,9 @@ public class Replaceable : MonoBehaviourPunCallbacks
 {
     [SerializeField] public Screw[] screws;
     [SerializeField] private CorrectPos correctPos;
+    [SerializeField] private int questID;
     [HideInInspector] public bool block;
+    private bool mounted;
     private Throwable objThrowable;
 
     private UnityAction onPickUpAction;
@@ -49,6 +51,30 @@ public class Replaceable : MonoBehaviourPunCallbacks
             {
                 block = true;
                 break;
+            }
+        }
+
+        mounted = true;
+        foreach (Screw screw in screws)
+        {
+            if (!screw.locked)
+            {
+                mounted = false;
+                break;
+            }
+        }
+
+        if(mounted)
+        {
+            if(questID != 0)
+            {
+                foreach (Screw screw in screws)
+                {
+                    QuestManager questManager = GameObject.Find("Quest Manager").GetComponent<QuestManager>();
+                    questManager.SetDoneSingleQuest(questID);
+                    // TODO: do sprawdzenia czy u innego wylaczy collider srubki
+                    screw.GetComponent<PhotonView>().RPC("RPC_DisableScrew", RpcTarget.AllBuffered, null);
+                }
             }
         }
     }

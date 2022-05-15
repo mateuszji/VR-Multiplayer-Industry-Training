@@ -50,6 +50,9 @@ MonoBehaviour:
   - RPC_DisableTool
   - RPC_Update_Angle
   - RPC_Update_Angle_And_Rotation
+  - RPC_DisableScrew
+  - RPC_StrikeText
+  - RPC_ShowGUI
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
